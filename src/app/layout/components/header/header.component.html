@@ -1,0 +1,189 @@
+<header class="bg-white shadow-sm border-b border-gray-200 relative z-10">
+  <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16">
+    <!-- Left side - Menu toggle and breadcrumb -->
+    <div class="flex items-center space-x-4">
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        (click)="onToggleSidebar()"
+        class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 lg:hidden">
+        <span class="sr-only">Menüyü aç</span>
+        @if (sidebarOpen) {
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        } @else {
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        }
+      </button>
+
+      <!-- Desktop menu toggle -->
+      <button
+        type="button"
+        (click)="onToggleSidebar()"
+        class="hidden lg:block text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+        <span class="sr-only">Sidebar'ı aç/kapat</span>
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Breadcrumb/Title -->
+      <div class="hidden sm:block">
+        <h1 class="text-xl font-semibold text-gray-900">Dashboard</h1>
+      </div>
+    </div>
+
+    <!-- Right side - Search, notifications, user menu -->
+    <div class="flex items-center space-x-4">
+      <!-- Search bar -->
+      <div class="hidden md:block">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Ara..."
+            class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleNotifications()"
+          class="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full">
+          <span class="sr-only">Bildirimleri görüntüle</span>
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          @if (unreadNotificationsCount > 0) {
+            <span class="absolute top-0 right-0 block h-4 w-4 rounded-full bg-red-500 text-xs font-medium text-white flex items-center justify-center">
+              {{ unreadNotificationsCount }}
+            </span>
+          }
+        </button>
+
+        <!-- Notifications dropdown -->
+        @if (notificationsOpen()) {
+          <div class="origin-top-right absolute right-0 mt-2 w-80 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50">
+            <!-- Header -->
+            <div class="px-4 py-3 flex justify-between items-center">
+              <h3 class="text-sm font-medium text-gray-900">Bildirimler</h3>
+              @if (unreadNotificationsCount > 0) {
+                <button
+                  (click)="markAllNotificationsAsRead()"
+                  class="text-xs text-primary-600 hover:text-primary-500">
+                  Tümünü okundu işaretle
+                </button>
+              }
+            </div>
+
+            <!-- Notifications list -->
+            <div class="max-h-64 overflow-y-auto">
+              @for (notification of notifications; track notification.id) {
+                <div
+                  class="px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                  [class.bg-blue-50]="!notification.read"
+                  (click)="markNotificationAsRead(notification.id)">
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                      @if (!notification.read) {
+                        <div class="w-2 h-2 bg-primary-600 rounded-full"></div>
+                      } @else {
+                        <div class="w-2 h-2"></div>
+                      }
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
+                      <p class="text-sm text-gray-500">{{ notification.message }}</p>
+                      <p class="text-xs text-gray-400 mt-1">{{ notification.time }}</p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Footer -->
+            <div class="px-4 py-3">
+              <a href="#" class="text-sm text-primary-600 hover:text-primary-500">
+                Tüm bildirimleri görüntüle
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- User menu -->
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleDropdown()"
+          class="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <div class="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center overflow-hidden">
+            <img
+              src="/logo/favicon-96x96.png"
+              alt="User Avatar"
+              class="h-6 w-6 object-contain">
+          </div>
+          <div class="hidden md:block text-left">
+            <p class="text-sm font-medium text-gray-700">{{ userDisplayName }}</p>
+            <p class="text-xs text-gray-500">{{ authService.user()?.email }}</p>
+          </div>
+          <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- User dropdown menu -->
+        @if (dropdownOpen()) {
+          <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50">
+            <div class="py-1">
+              <button
+                (click)="navigateToProfile()"
+                class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                <svg class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Profilim
+              </button>
+              <button
+                (click)="navigateToSettings()"
+                class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                <svg class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Ayarlar
+              </button>
+            </div>
+            <div class="py-1">
+              <button
+                (click)="onLogout()"
+                class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                <svg class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Çıkış Yap
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay to close dropdowns when clicking outside -->
+  @if (dropdownOpen() || notificationsOpen()) {
+    <div
+      class="fixed inset-0 z-40"
+      (click)="closeDropdowns()">
+    </div>
+  }
+</header>

@@ -1,0 +1,133 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+// Header styling
+header {
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+// Dropdown animations
+.dropdown-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: all 150ms ease-out;
+}
+
+.dropdown-leave {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.dropdown-leave-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  transition: all 100ms ease-in;
+}
+
+// User avatar hover effect
+.user-avatar {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Notification badge animation
+.notification-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Search bar focus effect
+.search-input {
+  transition: all 0.2s ease;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 768px) {
+  .user-info {
+    display: none;
+  }
+
+  .search-bar {
+    display: none;
+  }
+}
+
+// Button hover effects
+button {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Dropdown shadow
+.dropdown-shadow {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+// Notification styles
+.notification-item {
+  transition: background-color 0.2s ease;
+  border-left: 3px solid transparent;
+
+  &.unread {
+    border-left-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+// Header title animation
+h1 {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

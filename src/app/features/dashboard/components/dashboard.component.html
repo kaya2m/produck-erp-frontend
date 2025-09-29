@@ -1,0 +1,101 @@
+<div class="p-6">
+  <!-- Dashboard Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-semibold text-gray-900 mb-2">Dashboard</h1>
+    <p class="text-gray-600">Welcome to Produck ERP - Your business management solution</p>
+  </div>
+
+  <!-- Quick Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Total Users</p>
+          <p class="text-2xl font-bold text-gray-900">{{ rowData.length }}</p>
+        </div>
+        <div class="bg-primary-100 p-3 rounded-lg">
+          <span class="text-primary-600">👥</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Active Users</p>
+          <p class="text-2xl font-bold text-gray-900">4</p>
+        </div>
+        <div class="bg-success-100 p-3 rounded-lg">
+          <span class="text-success-600">✅</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Departments</p>
+          <p class="text-2xl font-bold text-gray-900">5</p>
+        </div>
+        <div class="bg-warning-100 p-3 rounded-lg">
+          <span class="text-warning-600">🏢</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Performance</p>
+          <p class="text-2xl font-bold text-gray-900">98%</p>
+        </div>
+        <div class="bg-primary-100 p-3 rounded-lg">
+          <span class="text-primary-600">📈</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Grid Section -->
+  <div class="card">
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold text-gray-900 mb-2">Employee Management</h2>
+      <p class="text-gray-600">Manage your team members and their information</p>
+    </div>
+
+    <erp-smart-grid
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [height]="'400px'"
+      [enableSelection]="true"
+      [enableFiltering]="true"
+      (rowClicked)="onRowClicked($event)">
+
+      <!-- Toolbar Left Content -->
+      <div slot="toolbar-left" class="flex items-center space-x-2">
+        <button class="btn-primary" (click)="onRefreshData()">
+          🔄 Refresh
+        </button>
+        <button class="btn-secondary" (click)="onExportData()">
+          📊 Export
+        </button>
+      </div>
+
+      <!-- Toolbar Right Content -->
+      <div slot="toolbar-right" class="flex items-center space-x-2">
+        <input
+          type="text"
+          placeholder="Quick search..."
+          class="form-input w-64"
+          #searchInput
+          (input)="onQuickSearch(searchInput.value)">
+      </div>
+
+      <!-- Footer Content -->
+      <div slot="footer" class="flex justify-between items-center">
+        <span>Showing {{ rowData.length }} records</span>
+        <span class="text-gray-500">Built with AG Grid Community</span>
+      </div>
+    </erp-smart-grid>
+  </div>
+</div>

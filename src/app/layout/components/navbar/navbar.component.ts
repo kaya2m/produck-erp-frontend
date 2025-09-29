@@ -1,0 +1,105 @@
+import { Component, signal, computed, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '@core/auth/auth.service';
+import { NotificationService } from '@core/services/notification.service';
+
+@Component({
+  selector: 'erp-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss'
+})
+export class NavbarComponent {
+  @Input() sidebarOpen = false;
+  @Output() toggleSidebar = new EventEmitter<void>();
+
+  isProfileMenuOpen = signal(false);
+  isNotificationMenuOpen = signal(false);
+  isDarkMode = signal(false);
+
+  // Mock notifications - replace with real service
+  notifications = signal([
+    { id: 1, title: 'Yeni Lead', message: 'Acme Corp firmasından yeni lead geldi', time: '2 dk önce', unread: true },
+    { id: 2, title: 'Görev Tamamlandı', message: 'Proje analizi tamamlandı', time: '15 dk önce', unread: true },
+    { id: 3, title: 'Sistem Güncellemesi', message: 'Sistem başarıyla güncellendi', time: '1 saat önce', unread: false }
+  ]);
+
+  unreadCount = computed(() =>
+    this.notifications().filter(n => n.unread).length
+  );
+
+  user = computed(() => this.authService.user());
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {
+    // Set initial theme based on system preference
+    this.isDarkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    // Close menus when clicking outside
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.profile-menu') && !target.closest('.notification-menu')) {
+        this.isProfileMenuOpen.set(false);
+        this.isNotificationMenuOpen.set(false);
+      }
+    });
+  }
+
+  onToggleSidebar(): void {
+    this.toggleSidebar.emit();
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen.set(!this.isProfileMenuOpen());
+    this.isNotificationMenuOpen.set(false);
+  }
+
+  toggleNotificationMenu(): void {
+    this.isNotificationMenuOpen.set(!this.isNotificationMenuOpen());
+    this.isProfileMenuOpen.set(false);
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode.set(!this.isDarkMode());
+    // Apply theme to document
+    if (this.isDarkMode()) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+
+  markNotificationAsRead(notificationId: number): void {
+    const notifications = this.notifications();
+    const updatedNotifications = notifications.map(n =>
+      n.id === notificationId ? { ...n, unread: false } : n
+    );
+    this.notifications.set(updatedNotifications);
+  }
+
+  markAllNotificationsAsRead(): void {
+    const notifications = this.notifications();
+    const updatedNotifications = notifications.map(n => ({ ...n, unread: false }));
+    this.notifications.set(updatedNotifications);
+  }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.notificationService.success('Başarıyla çıkış yapıldı');
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/settings/profile']);
+    this.isProfileMenuOpen.set(false);
+  }
+
+  navigateToSettings(): void {
+    this.router.navigate(['/settings']);
+    this.isProfileMenuOpen.set(false);
+  }
+}

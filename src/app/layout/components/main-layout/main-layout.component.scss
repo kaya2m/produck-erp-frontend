@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Sidebar animation
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+// Mobile responsiveness
+@media (max-width: 1024px) {
+  .sidebar-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 30;
+  }
+}
+
+// Main content area adjustments
+main {
+  background-color: #f8fafc;
+  min-height: calc(100vh - 140px); // Adjust for header and footer
+}
+
+// Smooth transitions
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+// Focus states
+button:focus,
+a:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+// Loading overlay
+.loading-overlay {
+  backdrop-filter: blur(2px);
+}
+
+// Footer styling
+footer {
+  box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.1);
+}

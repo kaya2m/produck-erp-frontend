@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(ng serve)",
+      "Bash(pkill:*)",
+      "Read(//mnt/c/Projects/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,163 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// Dark mode transition
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+// Custom form styling
+.form-input {
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+// Login form animations
+.space-y-6 > * {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Delay animations for form elements
+.space-y-6 > *:nth-child(1) { animation-delay: 0.1s; }
+.space-y-6 > *:nth-child(2) { animation-delay: 0.2s; }
+.space-y-6 > *:nth-child(3) { animation-delay: 0.3s; }
+.space-y-6 > *:nth-child(4) { animation-delay: 0.4s; }
+.space-y-6 > *:nth-child(5) { animation-delay: 0.5s; }
+.space-y-6 > *:nth-child(6) { animation-delay: 0.6s; }
+
+// Right side background animation
+.flex-1:last-child {
+  position: relative;
+  overflow: hidden;
+}
+
+.flex-1:last-child::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: shimmer 3s infinite;
+  transform: rotate(45deg);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+// Custom checkbox styling
+input[type="checkbox"] {
+  &:checked {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .hidden.lg\\:block {
+    display: none !important;
+  }
+}
+
+// Button hover effects
+button:not(.password-toggle) {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+  }
+
+  &:hover::before {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Password input container
+.relative {
+  position: relative !important;
+}
+
+// Password toggle button specific styling
+.password-toggle {
+  position: absolute !important;
+  z-index: 10;
+  background: transparent !important;
+  border: none !important;
+  overflow: visible !important;
+
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  &:hover {
+    background: transparent !important;
+  }
+
+  // Override global button styles for password toggle
+  &::before {
+    display: none !important;
+  }
+}
+
+// Error message styling
+.text-red-600 {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+// Focus states
+input:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+// Dark mode specific adjustments
+.dark {
+  .bg-primary-600 {
+    background-color: #1e40af;
+  }
+
+  .hover\\:bg-primary-700:hover {
+    background-color: #1d4ed8;
+  }
+
+  input::placeholder {
+    color: #6b7280;
+  }
+}
