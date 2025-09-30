@@ -26,6 +26,7 @@ export class SidebarComponent {
   @Input() isOpen = true;
   @Input() isMobile = false;
   @Output() close = new EventEmitter<void>();
+  @Output() expand = new EventEmitter<void>();
 
   expandedMenus = signal<Set<string>>(new Set());
   currentRoute = signal('');
@@ -47,7 +48,6 @@ export class SidebarComponent {
           title: 'Potansiyel Müşteriler',
           icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
           route: '/crm/leads',
-          badge: '12',
           badgeColor: 'primary'
         },
         {
@@ -55,7 +55,6 @@ export class SidebarComponent {
           title: 'Fırsatlar',
           icon: 'M13 10V3L4 14h7v7l9-11h-7z',
           route: '/crm/opportunities',
-          badge: '5',
           badgeColor: 'success'
         },
         {
@@ -79,23 +78,56 @@ export class SidebarComponent {
       route: '/workflow'
     },
     {
-      id: 'settings',
-      title: 'Ayarlar',
-      icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+      id: 'system-management',
+      title: 'Sistem Yönetimi', 
+      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
       children: [
         {
-          id: 'users',
-          title: 'Kullanıcılar',
+          id: 'user-management',
+          title: 'Kullanıcı Yönetimi',
           icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z',
-          route: '/settings/users',
+          route: '/system-management/users',
           permission: 'user_management'
         },
         {
-          id: 'security',
-          title: 'Güvenlik',
-          icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-          route: '/settings/security',
-          permission: 'security_settings'
+          id: 'role-management',
+          title: 'Rol Yönetimi',
+          icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+          route: '/system-management/roles',
+          permission: 'role_management'
+        },
+        {
+          id: 'security-dashboard',
+          title: 'Güvenlik Yönetimi',
+          icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+          route: '/system-management/security',
+          permission: 'security_management'
+        },
+        {
+          id: 'system-settings',
+          title: 'Sistem Ayarları',
+          icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+          route: '/system-management/settings',
+          permission: 'system_settings'
+        }
+      ]
+    },
+    {
+      id: 'settings',
+      title: 'Genel Ayarlar',
+      icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+      children: [
+        {
+          id: 'profile',
+          title: 'Profil',
+          icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+          route: '/settings/profile'
+        },
+        {
+          id: 'preferences',
+          title: 'Tercihler',
+          icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4',
+          route: '/settings/preferences'
         }
       ]
     }
@@ -192,6 +224,19 @@ export class SidebarComponent {
   }
 
   onItemClick(item: MenuItem): void {
+    // Eğer sidebar kapalıysa ve mobile değilse, önce sidebar'ı aç
+    if (!this.isOpen && !this.isMobile) {
+      this.expand.emit();
+      // Kısa bir gecikme sonrasında menu işlemini yap
+      setTimeout(() => {
+        this.handleMenuAction(item);
+      }, 150);
+    } else {
+      this.handleMenuAction(item);
+    }
+  }
+
+  private handleMenuAction(item: MenuItem): void {
     if (item.children && item.children.length > 0) {
       this.toggleMenu(item.id);
     } else if (item.route) {

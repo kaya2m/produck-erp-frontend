@@ -1,48 +1,48 @@
-// Component-specific styles for dashboard
-:host {
-  display: block;
-  background-color: #f8fafc;
-  min-height: 100vh;
-}
+// // Component-specific styles for dashboard
+// :host {
+//   display: block;
+//   background-color: #f8fafc;
+//   min-height: 100vh;
+// }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-}
+// .stats-grid {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+//   gap: 1.5rem;
+// }
 
-.stat-card {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  transition: all 0.2s ease-in-out;
+// .stat-card {
+//   background: white;
+//   border-radius: 0.75rem;
+//   padding: 1.5rem;
+//   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+//   border: 1px solid #e5e7eb;
+//   transition: all 0.2s ease-in-out;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-}
+//   &:hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+//   }
+// }
 
-// Custom scrollbar for grid
-:host ::ng-deep {
-  .ag-body-horizontal-scroll {
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
+// // Custom scrollbar for grid
+// :host ::ng-deep {
+//   .ag-body-horizontal-scroll {
+//     &::-webkit-scrollbar {
+//       height: 8px;
+//     }
 
-    &::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
+//     &::-webkit-scrollbar-track {
+//       background: #f1f5f9;
+//     }
 
-    &::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
+//     &::-webkit-scrollbar-thumb {
+//       background: #cbd5e1;
+//       border-radius: 4px;
+//     }
 
-    &::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-  }
-}
+//     &::-webkit-scrollbar-thumb:hover {
+//       background: #94a3b8;
+//     }
+//   }
+// }

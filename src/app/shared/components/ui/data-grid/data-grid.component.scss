@@ -1,0 +1,198 @@
+// No custom styles - using PrimeNG defaults
+// All styling is handled by PrimeNG Table's built-in classes:
+// - p-datatable-sm: Small size
+// - p-datatable-lg: Large size
+// - p-datatable-striped: Striped rows
+// - p-datatable-gridlines: Show gridlines
+
+// If you need minimal adjustments, use PrimeNG's CSS variables
+// Documentation: https://primeng.org/table#styling
+
+:host ::ng-deep {
+  .p-datatable {
+    border-radius: 0.75rem;
+    overflow: visible;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .p-datatable .p-datatable-header {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.75rem 0.75rem 0 0;
+    border-bottom: none;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    border-radius: 0;
+    border-top: none;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    border-radius: 0;
+  }
+
+  .grid-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .custom-buttons-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+  }
+
+  .default-buttons-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  // Button ve grid arası boşluk için
+  .p-datatable-wrapper {
+    border-radius: 0 0 0.75rem 0.75rem;
+    overflow: visible;
+  }
+
+  // Dropdown ve overlay'ler için
+  .p-datatable-scrollable-wrapper,
+  .p-datatable-scrollable-view,
+  .p-datatable-scrollable-body,
+  .p-datatable-thead,
+  .p-datatable-tbody,
+  .p-datatable-table-container {
+    overflow: visible !important;
+  }
+
+  .p-datatable-thead > tr,
+  .p-datatable-tbody > tr {
+    overflow: visible !important;
+  }
+
+  .p-datatable-thead > tr > th,
+  .p-datatable-tbody > tr > td {
+    overflow: visible !important;
+    position: relative;
+  }
+
+  // Table container'ı da visible yap
+  .p-datatable-table {
+    overflow: visible !important;
+  }
+
+  // Dropdown ve diğer overlay'lerin z-index'ini artır
+  .p-column-filter-overlay,
+  .p-dropdown-panel,
+  .p-multiselect-panel,
+  .p-calendar-panel,
+  .p-overlay {
+    z-index: 1100 !important;
+  }
+
+  // Filter overlay'leri için özel
+  .p-column-filter {
+    overflow: visible !important;
+  }
+
+  // Summary styling
+  .p-datatable .p-datatable-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--surface-border);
+    background: var(--surface-50);
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+
+  .grid-summary {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--surface-0);
+    border-radius: 0.5rem;
+    border: 1px solid var(--surface-border);
+    transition: all 0.2s ease;
+
+    &.selected {
+      background: var(--primary-50);
+      border-color: var(--primary-200);
+      color: var(--primary-700);
+
+      .summary-icon {
+        color: var(--primary-600);
+      }
+    }
+  }
+
+  .summary-icon {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+  }
+
+  .summary-text {
+    font-size: 0.875rem;
+    color: var(--text-color);
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  // Filter icon alignment and sizing
+  .p-datatable-thead > tr > th {
+    .p-column-filter-menu-button,
+    .p-column-filter-clear-button {
+      width: 1.25rem !important;
+      height: 1.25rem !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      vertical-align: middle !important;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+
+      .p-icon {
+        font-size: 0.75rem !important;
+        width: 0.75rem !important;
+        height: 0.75rem !important;
+      }
+
+      &:hover {
+        background: var(--surface-100) !important;
+        border-radius: 0.25rem !important;
+      }
+    }
+  }
+
+  // Header content alignment
+  .p-datatable-thead > tr > th > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 1.25rem !important;
+
+    > span {
+      line-height: 1.25rem !important;
+    }
+
+    > div {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.25rem !important;
+    }
+  }
+}

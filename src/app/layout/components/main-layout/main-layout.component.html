@@ -4,7 +4,8 @@
     <erp-sidebar
       [isOpen]="isSidebarOpen()"
       [isMobile]="false"
-      (close)="onCloseSidebar()">
+      (close)="onCloseSidebar()"
+      (expand)="onExpandSidebar()">
     </erp-sidebar>
   }
 
@@ -13,7 +14,8 @@
     <erp-sidebar
       [isOpen]="isSidebarOpen()"
       [isMobile]="true"
-      (close)="onCloseSidebar()">
+      (close)="onCloseSidebar()"
+      (expand)="onExpandSidebar()">
     </erp-sidebar>
   }
 
@@ -36,8 +38,8 @@
 
     <!-- Main content -->
     <main class="flex-1 relative overflow-y-auto focus:outline-none bg-gray-50 dark:bg-gray-900">
-      <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-4">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
           <router-outlet></router-outlet>
         </div>
       </div>

@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.erp-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+// Label
+.erp-input-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+
+  .erp-input-required {
+    color: var(--red-500);
+    margin-left: 0.25rem;
+  }
+}
+
+// Input Container
+.erp-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &.erp-input-has-error {
+    .erp-input-label {
+      color: var(--red-700);
+    }
+
+    input {
+      border-color: var(--red-500) !important;
+
+      &:focus {
+        border-color: var(--red-500) !important;
+        box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.25) !important;
+      }
+    }
+  }
+}
+
+// Size variants
+.erp-input-field {
+  width: 100%;
+  transition: border-color 0.2s ease;
+
+  &.erp-input-sm {
+    font-size: 0.813rem !important;
+    padding: 0.375rem 0.75rem !important;
+    height: 2rem !important;
+  }
+
+  &.erp-input-lg {
+    font-size: 1rem !important;
+    padding: 0.625rem 1rem !important;
+    height: 3rem !important;
+  }
+
+  // With icons
+  &.erp-input-with-prefix {
+    padding-left: 2.5rem !important;
+  }
+
+  &.erp-input-with-suffix {
+    padding-right: 2.5rem !important;
+  }
+}
+
+// Icons
+.erp-input-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-secondary);
+  pointer-events: none;
+
+  &.erp-input-icon-prefix {
+    left: 0.75rem;
+  }
+
+  &.erp-input-icon-suffix {
+    right: 0.75rem;
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+// Password Toggle
+.erp-input-password-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: all;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--primary-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+// Helper Text
+.erp-input-helper-text {
+  display: block;
+  font-size: 0.813rem;
+  color: var(--text-color-secondary);
+}
+
+// Error Text
+.erp-input-error-text {
+  display: block;
+  font-size: 0.813rem;
+  color: var(--red-600);
+}

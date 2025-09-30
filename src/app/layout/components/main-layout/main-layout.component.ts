@@ -40,4 +40,8 @@ export class MainLayoutComponent {
   onCloseSidebar(): void {
     this.isSidebarOpen.set(false);
   }
+
+  onExpandSidebar(): void {
+    this.isSidebarOpen.set(true);
+  }
 }

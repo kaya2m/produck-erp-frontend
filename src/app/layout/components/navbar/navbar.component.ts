@@ -1,13 +1,16 @@
-import { Component, signal, computed, Input, Output, EventEmitter } from '@angular/core';
+import { Component, signal, computed, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import { NotificationService } from '@core/services/notification.service';
+import { ThemeService } from '@core/services/theme.service';
+import { BreadcrumbService } from '@core/services/breadcrumb.service';
+import { BreadcrumbComponent } from '@shared/components/ui/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'erp-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BreadcrumbComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -17,12 +20,15 @@ export class NavbarComponent {
 
   isProfileMenuOpen = signal(false);
   isNotificationMenuOpen = signal(false);
-  isDarkMode = signal(false);
+  private readonly themeService = inject(ThemeService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  readonly isDarkMode = this.themeService.isDarkMode;
+  readonly breadcrumbItems = this.breadcrumbService.items;
 
   // Mock notifications - replace with real service
   notifications = signal([
-    { id: 1, title: 'Yeni Lead', message: 'Acme Corp firmasından yeni lead geldi', time: '2 dk önce', unread: true },
-    { id: 2, title: 'Görev Tamamlandı', message: 'Proje analizi tamamlandı', time: '15 dk önce', unread: true },
+    { id: 1, title: 'Yeni Lead', message: 'Acme Corp firmasından yeni lead geldi', time: '2 dk önce', unread: false },
+    { id: 2, title: 'Görev Tamamlandı', message: 'Proje analizi tamamlandı', time: '15 dk önce', unread: false },
     { id: 3, title: 'Sistem Güncellemesi', message: 'Sistem başarıyla güncellendi', time: '1 saat önce', unread: false }
   ]);
 
@@ -37,9 +43,6 @@ export class NavbarComponent {
     private router: Router,
     private notificationService: NotificationService
   ) {
-    // Set initial theme based on system preference
-    this.isDarkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-
     // Close menus when clicking outside
     document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
@@ -65,13 +68,7 @@ export class NavbarComponent {
   }
 
   toggleTheme(): void {
-    this.isDarkMode.set(!this.isDarkMode());
-    // Apply theme to document
-    if (this.isDarkMode()) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    this.themeService.toggleTheme();
   }
 
   markNotificationAsRead(notificationId: number): void {

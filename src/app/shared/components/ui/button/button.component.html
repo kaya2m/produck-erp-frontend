@@ -1,0 +1,24 @@
+<p-button
+  [iconPos]="iconRight ? 'right' : 'left'"
+  [disabled]="disabled() || loading()"
+  [loading]="loading()"
+  [severity]="getSeverity()"
+  [text]="variant === 'ghost'"
+  [outlined]="variant === 'outline'"
+  [size]="getSize()"
+  [type]="type"
+  [style.width]="fullWidth ? '100%' : 'auto'"
+  (onClick)="handleClick($event)"
+>
+  <ng-container *ngIf="iconLeft && !loading()">
+    <ng-content select="[slot=icon-left]"></ng-content>
+  </ng-container>
+
+  <ng-container *ngIf="!iconOnly()">
+    <ng-content></ng-content>
+  </ng-container>
+
+  <ng-container *ngIf="iconRight && !loading()">
+    <ng-content select="[slot=icon-right]"></ng-content>
+  </ng-container>
+</p-button>

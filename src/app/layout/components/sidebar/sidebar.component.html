@@ -1,161 +1,184 @@
 <!-- Sidebar overlay for mobile -->
-@if (isMobile && isOpen) {
+@if (isMobile) {
   <div
-    class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+    class="sidebar-overlay lg:hidden"
+    [class.sidebar-overlay--visible]="isOpen"
+    [attr.aria-hidden]="!isOpen"
     (click)="onBackdropClick()">
   </div>
 }
 
 <!-- Sidebar with ultra smooth animations -->
-<div class="sidebar-container flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-full overflow-hidden"
-     [class.w-64]="isOpen"
-     [class.w-0]="!isOpen && !isMobile"
-     [class.opacity-100]="isOpen"
-     [class.opacity-0]="!isOpen && !isMobile"
-     [class.translate-x-0]="isOpen && isMobile"
-     [class.-translate-x-full]="!isOpen && isMobile"
-     [class.fixed]="isMobile"
-     [class.inset-y-0]="isMobile"
-     [class.left-0]="isMobile"
-     [class.z-50]="isMobile"
-     [class.relative]="!isMobile"
-     [style.min-width]="isOpen ? '16rem' : '0'"
-     [style.max-width]="isOpen ? '16rem' : '0'">
+<div
+  class="sidebar-container flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-full overflow-hidden"
+  [class.sidebar-container--open]="isOpen"
+  [class.sidebar-container--closed]="!isOpen && isMobile"
+  [class.sidebar-container--collapsed]="!isOpen && !isMobile"
+  [class.opacity-100]="isOpen || !isMobile"
+  [class.opacity-0]="!isOpen && isMobile"
+  [class.translate-x-0]="isMobile && isOpen"
+  [class.-translate-x-full]="isMobile && !isOpen"
+  [class.fixed]="isMobile"
+  [class.inset-y-0]="isMobile"
+  [class.left-0]="isMobile"
+  [class.z-50]="isMobile"
+  [class.relative]="!isMobile"
+  [style.width]="isMobile ? (isOpen ? '16rem' : '0') : (isOpen ? '16rem' : '4rem')"
+  [style.min-width]="isMobile ? (isOpen ? '16rem' : '0') : (isOpen ? '16rem' : '4rem')"
+  [style.max-width]="isMobile ? (isOpen ? '16rem' : '0') : (isOpen ? '16rem' : '4rem')">
 
-  <!-- Sidebar Header -->
-  <div class="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
-    <!-- Logo and Title -->
-    <div class="flex items-center">
-      <img src="/logo/favicon.svg" alt="Produck ERP" class="h-8 w-8">
-      <span class="ml-2 text-lg font-semibold text-gray-900 dark:text-white">Produck ERP</span>
-    </div>
+  <div class="sidebar-content flex flex-col h-full">
 
-    <!-- Toggle button for closing sidebar (moved to right) -->
-    <button
-      (click)="onToggleSidebar()"
-      class="burger-button p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
-      title="Menüyü Kapat">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
-    @if (isMobile) {
-      <button
-        (click)="close.emit()"
-        class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    }
-  </div>
-
-  <!-- Navigation Menu -->
-  <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
-    @for (item of filteredMenuItems(); track item.id) {
-      <div>
-        <!-- Main menu item -->
-        <button
-          type="button"
-          (click)="onItemClick(item)"
-          class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200"
-          [class.bg-primary-100]="isActive(item) && !item.children"
-          [class.text-primary-700]="isActive(item) && !item.children"
-          [class.dark:bg-primary-900]="isActive(item) && !item.children"
-          [class.dark:text-primary-200]="isActive(item) && !item.children"
-          [class.bg-gray-100]="hasActiveChild(item)"
-          [class.text-gray-900]="hasActiveChild(item)"
-          [class.dark:bg-gray-700]="hasActiveChild(item)"
-          [class.dark:text-white]="hasActiveChild(item)"
-          [class.text-gray-600]="!isActive(item) && !hasActiveChild(item)"
-          [class.dark:text-gray-300]="!isActive(item) && !hasActiveChild(item)"
-          [class.hover:bg-gray-100]="!isActive(item) && !hasActiveChild(item)"
-          [class.dark:hover:bg-gray-700]="!isActive(item) && !hasActiveChild(item)"
-          [class.hover:text-gray-900]="!isActive(item) && !hasActiveChild(item)"
-          [class.dark:hover:text-white]="!isActive(item) && !hasActiveChild(item)">
-
-          <div class="flex items-center">
-            <!-- Icon -->
-            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon"></path>
-            </svg>
-
-            <!-- Title -->
-            <span class="truncate">{{ item.title }}</span>
-
-            <!-- Badge -->
-            @if (item.badge) {
-              <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full"
-                    [class]="getBadgeColor(item.badgeColor)">
-                {{ item.badge }}
-              </span>
-            }
-          </div>
-
-          <!-- Expand/Collapse Arrow -->
-          @if (item.children && item.children.length > 0) {
-            <svg
-              class="w-4 h-4 transition-transform duration-200"
-              [class.rotate-90]="isMenuExpanded(item.id)"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          }
-        </button>
-
-        <!-- Submenu -->
-        @if (item.children && item.children.length > 0 && isMenuExpanded(item.id)) {
-          <div class="mt-1 ml-6 space-y-1">
-            @for (child of item.children; track child.id) {
-              <button
-                type="button"
-                (click)="onItemClick(child)"
-                class="w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors duration-200"
-                [class.bg-primary-100]="isActive(child)"
-                [class.text-primary-700]="isActive(child)"
-                [class.dark:bg-primary-900]="isActive(child)"
-                [class.dark:text-primary-200]="isActive(child)"
-                [class.text-gray-600]="!isActive(child)"
-                [class.dark:text-gray-400]="!isActive(child)"
-                [class.hover:bg-gray-100]="!isActive(child)"
-                [class.dark:hover:bg-gray-700]="!isActive(child)"
-                [class.hover:text-gray-900]="!isActive(child)"
-                [class.dark:hover:text-gray-300]="!isActive(child)">
-
-                <div class="flex items-center">
-                  <!-- Child Icon -->
-                  <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="child.icon"></path>
-                  </svg>
-
-                  <!-- Child Title -->
-                  <span class="truncate">{{ child.title }}</span>
-                </div>
-
-                <!-- Child Badge -->
-                @if (child.badge) {
-                  <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full"
-                        [class]="getBadgeColor(child.badgeColor)">
-                    {{ child.badge }}
-                  </span>
-                }
-              </button>
-            }
-          </div>
+    <!-- Sidebar Header -->
+    <div class="sidebar-header flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+      <!-- Logo and Title -->
+      <div class="sidebar-brand flex items-center">
+        <img src="/logo/favicon.svg" alt="Produck ERP" class="h-8 w-8">
+        @if (isOpen || isMobile) {
+          <span class="sidebar-title ml-2 text-lg font-semibold text-gray-900 dark:text-white">Produck ERP</span>
         }
       </div>
-    }
-  </nav>
 
-  <!-- Sidebar Footer -->
-  <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <span>v2.0.1</span>
+      <!-- Toggle button for closing sidebar (moved to right) -->
+      @if (isOpen || isMobile) {
+        <button
+          (click)="onToggleSidebar()"
+          class="burger-button p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+          title="Menüyü Kapat">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      }
+      @if (isMobile) {
+        <button
+          (click)="close.emit()"
+          class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+      @for (item of filteredMenuItems(); track item.id) {
+        <div>
+          <!-- Main menu item -->
+          <button
+            type="button"
+            (click)="onItemClick(item)"
+            class="sidebar-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200"
+            [title]="!isOpen ? item.title : ''"
+         [class.sidebar-item--collapsed]="!isOpen && !isMobile"
+         [class.sidebar-item--has-children]="item.children && item.children.length > 0"
+         [class.sidebar-item--leaf]="!item.children || item.children.length === 0"
+         [class.bg-primary-100]="isActive(item) && !item.children"
+         [class.text-primary-700]="isActive(item) && !item.children"
+         [class.dark:bg-primary-900]="isActive(item) && !item.children"
+         [class.dark:text-primary-200]="isActive(item) && !item.children"
+         [class.bg-gray-100]="hasActiveChild(item)"
+         [class.text-gray-900]="hasActiveChild(item)"
+         [class.dark:bg-gray-700]="hasActiveChild(item)"
+         [class.dark:text-white]="hasActiveChild(item)"
+         [class.text-gray-600]="!isActive(item) && !hasActiveChild(item)"
+         [class.dark:text-gray-300]="!isActive(item) && !hasActiveChild(item)"
+         [class.hover:bg-gray-100]="!isActive(item) && !hasActiveChild(item)"
+         [class.dark:hover:bg-gray-700]="!isActive(item) && !hasActiveChild(item)"
+         [class.hover:text-gray-900]="!isActive(item) && !hasActiveChild(item)"
+         [class.dark:hover:text-white]="!isActive(item) && !hasActiveChild(item)">
+
+            <div class="sidebar-item__content flex items-center">
+              <!-- Icon -->
+              <svg class="sidebar-item__icon w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon"></path>
+              </svg>
+
+              <!-- Title -->
+              @if (isOpen || isMobile) {
+                <span class="sidebar-item__label truncate">{{ item.title }}</span>
+              }
+
+              <!-- Badge -->
+              @if ((isOpen || isMobile) && item.badge) {
+                <span class="sidebar-item__badge ml-2 px-2 py-0.5 text-xs font-medium rounded-full"
+                   [ngClass]="getBadgeColor(item.badgeColor)">
+                  {{ item.badge }}
+                </span>
+              }
+            </div>
+
+            <!-- Expand/Collapse Arrow -->
+            @if (item.children && item.children.length > 0 && (isOpen || isMobile)) {
+              <svg
+                class="sidebar-item__arrow w-4 h-4 transition-transform duration-200"
+             [class.rotate-90]="isMenuExpanded(item.id)"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            }
+          </button>
+
+          <!-- Submenu -->
+          @if (item.children && item.children.length > 0 && (isOpen || isMobile) && isMenuExpanded(item.id)) {
+            <div class="sidebar-submenu mt-1 space-y-1">
+              @for (child of item.children; track child.id) {
+                <button
+                  type="button"
+                  (click)="onItemClick(child)"
+                  class="sidebar-subitem w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors duration-200"
+                  [title]="!isOpen ? child.title : ''"
+               [class.sidebar-subitem--collapsed]="!isOpen && !isMobile"
+               [class.bg-primary-100]="isActive(child)"
+               [class.text-primary-700]="isActive(child)"
+               [class.dark:bg-primary-900]="isActive(child)"
+               [class.dark:text-primary-200]="isActive(child)"
+               [class.text-gray-600]="!isActive(child)"
+               [class.dark:text-gray-400]="!isActive(child)"
+               [class.hover:bg-gray-100]="!isActive(child)"
+               [class.dark:hover:bg-gray-700]="!isActive(child)"
+               [class.hover:text-gray-900]="!isActive(child)"
+               [class.dark:hover:text-gray-300]="!isActive(child)">
+
+                  <div class="sidebar-subitem__content flex items-center">
+                    <!-- Child Icon -->
+                    <svg class="sidebar-subitem__icon w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="child.icon"></path>
+                    </svg>
+
+                    <!-- Child Title -->
+                    @if (isOpen || isMobile) {
+                      <span class="sidebar-subitem__label truncate">{{ child.title }}</span>
+                    }
+                  </div>
+
+                  <!-- Child Badge -->
+                  @if ((isOpen || isMobile) && child.badge) {
+                    <span class="sidebar-subitem__badge ml-2 px-2 py-0.5 text-xs font-medium rounded-full"
+                       [ngClass]="getBadgeColor(child.badgeColor)">
+                      {{ child.badge }}
+                    </span>
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>v2.0.1</span>
+      </div>
     </div>
   </div>
 </div>
+

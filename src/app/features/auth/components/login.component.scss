@@ -8,12 +8,6 @@
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-// Custom form styling
-.form-input {
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-}
 
 // Login form animations
 .space-y-6 > * {
@@ -140,24 +134,4 @@ button:not(.password-toggle) {
   75% { transform: translateX(5px); }
 }
 
-// Focus states
-input:focus,
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
 
-// Dark mode specific adjustments
-.dark {
-  .bg-primary-600 {
-    background-color: #1e40af;
-  }
-
-  .hover\\:bg-primary-700:hover {
-    background-color: #1d4ed8;
-  }
-
-  input::placeholder {
-    color: #6b7280;
-  }
-}

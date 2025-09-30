@@ -1,0 +1,38 @@
+<p-dialog
+  [(visible)]="isOpen"
+  [header]="title"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="true"
+  [dismissableMask]="closeOnOverlayClick"
+  [closable]="showCloseButton"
+  [styleClass]="getStyleClass()"
+  [style]="getDialogStyle()"
+  (onHide)="onClose()"
+>
+  <!-- Content -->
+  <ng-content></ng-content>
+
+  <!-- Footer -->
+  <ng-template pTemplate="footer" *ngIf="showFooter">
+    <ng-content select="[slot=footer]"></ng-content>
+
+    <ng-container *ngIf="!hasCustomFooter">
+      <p-button
+        *ngIf="showCancelButton"
+        [label]="cancelText"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="cancel()"
+      />
+      <p-button
+        *ngIf="showConfirmButton"
+        [label]="confirmText"
+        [severity]="confirmVariant === 'destructive' ? 'danger' : null"
+        [loading]="loading()"
+        (onClick)="confirm()"
+      />
+    </ng-container>
+  </ng-template>
+</p-dialog>

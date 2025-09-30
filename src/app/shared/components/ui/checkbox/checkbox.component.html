@@ -1,0 +1,28 @@
+<div class="erp-checkbox-wrapper">
+  <div class="flex align-items-start">
+    <p-checkbox
+      [inputId]="checkboxId"
+      [binary]="true"
+      [ngModel]="checked()"
+      (ngModelChange)="onToggle($event)"
+      (onBlur)="onBlur()"
+      [disabled]="disabled()"
+      [styleClass]="getStyleClass()"
+    />
+
+    <div *ngIf="label || description" class="erp-checkbox-content">
+      <label *ngIf="label" [for]="checkboxId" class="erp-checkbox-label">
+        {{ label }}
+        <span *ngIf="required" class="erp-checkbox-required">*</span>
+      </label>
+
+      <p *ngIf="description" class="erp-checkbox-description">
+        {{ description }}
+      </p>
+    </div>
+  </div>
+
+  <small *ngIf="errorMessage()" class="erp-checkbox-error">
+    {{ errorMessage() }}
+  </small>
+</div>

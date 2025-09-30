@@ -1,0 +1,70 @@
+:host ::ng-deep {
+  // Base card styles
+  .erp-card {
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  // Variants
+  .erp-card-outlined {
+    border: 2px solid var(--surface-border);
+  }
+
+  .erp-card-elevated {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  // Padding variants
+  .erp-card-padding-none {
+    .p-card-body,
+    .p-card-content {
+      padding: 0 !important;
+    }
+  }
+
+  .erp-card-padding-sm {
+    .p-card-body {
+      padding: 1rem !important;
+    }
+
+    .p-card-header {
+      padding: 0.75rem 1rem !important;
+    }
+
+    .p-card-footer {
+      padding: 0.75rem 1rem !important;
+    }
+  }
+
+  .erp-card-padding-lg {
+    .p-card-body {
+      padding: 2rem !important;
+    }
+
+    .p-card-header {
+      padding: 1.5rem 2rem !important;
+    }
+
+    .p-card-footer {
+      padding: 1.5rem 2rem !important;
+    }
+  }
+
+  // Hover effect
+  .erp-card-hover {
+    &:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+  }
+
+  // Clickable
+  .erp-card-clickable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    }
+  }
+}

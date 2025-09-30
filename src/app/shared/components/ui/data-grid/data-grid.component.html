@@ -1,0 +1,407 @@
+<p-table
+  #dt
+  [value]="value"
+  [columns]="visibleColumns()"
+  [dataKey]="config.dataKey || 'id'"
+  [rows]="config.rows || 10"
+  [first]="first()"
+  [totalRecords]="config.totalRecords || value.length"
+  [paginator]="config.paginator !== false"
+  [rowsPerPageOptions]="config.rowsPerPageOptions || [10, 25, 50]"
+  [showCurrentPageReport]="config.showCurrentPageReport !== false"
+  [currentPageReportTemplate]="config.currentPageReportTemplate || '{first} - {last} / {totalRecords}'"
+  [filterDelay]="config.filterDelay || 300"
+  [globalFilterFields]="config.globalFilterFields"
+  [loading]="loading()"
+  [loadingIcon]="config.loadingIcon"
+  [lazy]="config.lazy || false"
+  [selectionMode]="config.selectionMode || null"
+  [(selection)]="selectedRows"
+  (selectionChange)="onSelectionChange($event)"
+  (onRowSelect)="onRowSelect($event)"
+  (onRowUnselect)="onRowUnselect($event)"
+  [metaKeySelection]="config.metaKeySelection"
+  [sortMode]="config.sortMode || 'single'"
+  [sortField]="config.sortField || ''"
+  [sortOrder]="config.sortOrder || 1"
+  (onSort)="onSort($event)"
+  (onFilter)="onFilter($event)"
+  (onLazyLoad)="onLazyLoad($event)"
+  (onPage)="onPage($event)"
+  [resizableColumns]="config.resizableColumns !== false"
+  [columnResizeMode]="config.columnResizeMode || 'expand'"
+  (onColResize)="onColResize($event)"
+  [reorderableColumns]="config.reorderableColumns !== false"
+  (onColReorder)="onColReorder($event)"
+  [contextMenu]="cm"
+  [rowHover]="config.rowHover !== false"
+  [responsiveLayout]="config.responsiveLayout || 'scroll'"
+  [scrollable]="config.scrollable || false"
+  [scrollHeight]="config.scrollHeight"
+  [virtualScroll]="config.virtualScroll || false"
+  [virtualScrollItemSize]="config.virtualScrollItemSize"
+  [frozenValue]="config.frozenValue"
+  (onStateRestore)="onStateRestore($event)"
+  (onStateSave)="onStateSave($event)"
+  [styleClass]="getTableStyleClass()"
+  [exportFilename]="config.exportFilename || 'data'"
+>
+  <!-- Caption with Custom Buttons -->
+  <ng-template pTemplate="caption">
+    <div class="grid-header-container">
+      <!-- Left Side: Custom Buttons (Page Specific) -->
+      <div class="custom-buttons-left">
+        @for (btn of customButtons; track btn.label) {
+          @if (btn.visible !== false) {
+            <p-button
+              [label]="btn.label"
+              [icon]="btn.icon"
+              [severity]="btn.severity || 'secondary'"
+              [disabled]="btn.disabled"
+              size="small"
+              (onClick)="btn.command()"
+            />
+          }
+        }
+      </div>
+
+      <!-- Right Side: Default Action Buttons -->
+      <div class="default-buttons-right">
+        <p-button
+          icon="pi pi-table"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          size="small"
+          (onClick)="toggleColumnDialog()"
+          pTooltip="Sütunları Göster/Gizle"
+        />
+        <p-button
+          icon="pi pi-refresh"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          size="small"
+          (onClick)="reset()"
+          pTooltip="Yenile"
+        />
+        <p-button
+          icon="pi pi-file"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          size="small"
+          (onClick)="exportCSV()"
+          pTooltip="CSV olarak dışa aktar"
+        />
+        <p-button
+          icon="pi pi-file-excel"
+          [text]="true"
+          [rounded]="true"
+          severity="success"
+          size="small"
+          (onClick)="exportExcel()"
+          pTooltip="Excel olarak dışa aktar"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Header -->
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th
+        *ngFor="let col of visibleColumns()"
+        [pSortableColumn]="col.sortable !== false ? col.field : undefined"
+        [style.width]="col.width"
+        pReorderableColumn
+        pResizableColumn
+      >
+        <div class="flex align-items-center justify-content-between gap-2">
+          <span>{{ col.header }}</span>
+          <div class="flex align-items-center gap-1">
+            <p-sortIcon *ngIf="col.sortable !== false" [field]="col.field"></p-sortIcon>
+
+            <!-- Filter Icon in Header -->
+            <ng-container *ngIf="col.filterable !== false">
+              <ng-container [ngSwitch]="col.filterType || col.type">
+                <!-- Text Filter -->
+                <ng-container *ngSwitchCase="'text'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'contains'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <input
+                        pInputText
+                        type="text"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        placeholder="Ara..."
+                        class="w-full"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Numeric Filter -->
+                <ng-container *ngSwitchCase="'numeric'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'equals'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <input
+                        pInputText
+                        type="number"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        placeholder="Ara..."
+                        class="w-full"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Number Type Filter -->
+                <ng-container *ngSwitchCase="'number'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'equals'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <input
+                        pInputText
+                        type="number"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        placeholder="Ara..."
+                        class="w-full"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Date Filter -->
+                <ng-container *ngSwitchCase="'date'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'dateIs'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-datepicker
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        dateFormat="dd/mm/yy"
+                        placeholder="Tarih seçin"
+                        [style]="{'width': '100%'}"
+                        appendTo="body"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Boolean Filter -->
+                <ng-container *ngSwitchCase="'boolean'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    matchMode="equals"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="false"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-select
+                        [options]="[
+                          { label: 'Tümü', value: null },
+                          { label: 'Evet', value: true },
+                          { label: 'Hayır', value: false }
+                        ]"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seç"
+                        [style]="{'width': '100%'}"
+                        appendTo="body"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Currency Filter -->
+                <ng-container *ngSwitchCase="'currency'">
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'equals'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <input
+                        pInputText
+                        type="number"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        placeholder="Ara..."
+                        class="w-full"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+
+                <!-- Default Text Filter -->
+                <ng-container *ngSwitchDefault>
+                  <p-columnFilter
+                    [field]="col.field"
+                    [matchMode]="col.filterMatchMode || 'contains'"
+                    [showMenu]="true"
+                    [showOperator]="false"
+                    [showMatchModes]="true"
+                    [showAddButton]="false"
+                    display="menu"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <input
+                        pInputText
+                        type="text"
+                        [ngModel]="value"
+                        (ngModelChange)="filter($event)"
+                        placeholder="Ara..."
+                        class="w-full"
+                      />
+                    </ng-template>
+                  </p-columnFilter>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <!-- Body -->
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr
+      [pContextMenuRow]="rowData"
+      (contextmenu)="onRowContextMenu($event, rowData)"
+      [ngClass]="config.rowClass ? config.rowClass(rowData) : ''"
+    >
+      <td *ngFor="let col of visibleColumns()">
+        <ng-container [ngSwitch]="col.type">
+          <ng-container *ngSwitchCase="'boolean'">
+            <i
+              class="pi"
+              [class.pi-check]="rowData[col.field]"
+              [class.pi-times]="!rowData[col.field]"
+              [class.text-green-500]="rowData[col.field]"
+              [class.text-red-500]="!rowData[col.field]"
+            ></i>
+          </ng-container>
+          <ng-container *ngSwitchCase="'status'">
+            <p-tag
+              [value]="getStatusLabel(rowData[col.field])"
+              [severity]="getStatusSeverity(rowData[col.field])"
+            ></p-tag>
+          </ng-container>
+          <ng-container *ngSwitchCase="'currency'">
+            <span>{{ formatCurrency(rowData[col.field]) }}</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="'date'">
+            <span>{{ formatDate(rowData[col.field]) }}</span>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <span>{{ rowData[col.field] }}</span>
+          </ng-container>
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+
+  <!-- Empty Message -->
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="visibleColumns().length" class="text-center">
+        <div class="flex flex-column align-items-center justify-content-center py-5">
+          <i class="pi pi-inbox text-4xl text-400 mb-3"></i>
+          <span class="text-500">Veri bulunamadı</span>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <!-- Summary -->
+  <ng-template pTemplate="summary">
+    <div class="grid-summary">
+      <div class="summary-item">
+        <i class="pi pi-list summary-icon"></i>
+        <span class="summary-text">
+          <strong>{{ value.length }}</strong> kayıt
+        </span>
+      </div>
+      @if (getSelectedCount() > 0) {
+        <div class="summary-item selected">
+          <i class="pi pi-check-circle summary-icon"></i>
+          <span class="summary-text">
+            <strong>{{ getSelectedCount() }}</strong> seçili
+          </span>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- Context Menu -->
+<p-contextMenu #cm [model]="contextMenuItems()"></p-contextMenu>
+
+<!-- Column Toggle Dialog -->
+<p-dialog
+  [(visible)]="columnDialogVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '350px'}"
+  header="Sütunları Seç"
+>
+  <div style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 400px; overflow-y: auto;">
+    @for (col of columnOptions(); track col.field) {
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <p-checkbox
+          [binary]="true"
+          [ngModel]="!col.hidden"
+          (ngModelChange)="onColumnVisibilityChange(col, $event)"
+          [inputId]="'col-' + col.field"
+        />
+        <label [for]="'col-' + col.field" style="cursor: pointer; user-select: none;">
+          {{ col.header }}
+        </label>
+      </div>
+    }
+  </div>
+</p-dialog>

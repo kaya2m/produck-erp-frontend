@@ -1,0 +1,64 @@
+<div class="erp-input-wrapper">
+  <!-- Label -->
+  <label *ngIf="label" [for]="inputId" class="erp-input-label">
+    {{ label }}
+    <span *ngIf="required" class="erp-input-required">*</span>
+  </label>
+
+  <!-- Input Container -->
+  <div class="erp-input-container" [ngClass]="{
+    'erp-input-has-error': errorMessage(),
+    'erp-input-disabled': disabled()
+  }">
+    <!-- Prefix Icon -->
+    <span *ngIf="prefixIcon" class="erp-input-icon erp-input-icon-prefix">
+      <ng-content select="[slot=prefix-icon]"></ng-content>
+    </span>
+
+    <!-- Input Field -->
+    <input
+      [id]="inputId"
+      [type]="currentType()"
+      [placeholder]="placeholder"
+      [disabled]="disabled()"
+      [readonly]="readonly"
+      [value]="value()"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      (focus)="onFocus()"
+      pInputText
+      [ngClass]="{
+        'erp-input-sm': size === 'sm',
+        'erp-input-default': size === 'default',
+        'erp-input-lg': size === 'lg',
+        'erp-input-with-prefix': prefixIcon,
+        'erp-input-with-suffix': suffixIcon || type === 'password'
+      }"
+      class="erp-input-field"
+    />
+
+    <!-- Password Toggle -->
+    <button
+      *ngIf="type === 'password'"
+      type="button"
+      class="erp-input-icon erp-input-icon-suffix erp-input-password-toggle"
+      (click)="togglePasswordVisibility()"
+      [disabled]="disabled()"
+    >
+      <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+    </button>
+
+    <!-- Suffix Icon -->
+    <span *ngIf="suffixIcon && type !== 'password'" class="erp-input-icon erp-input-icon-suffix">
+      <ng-content select="[slot=suffix-icon]"></ng-content>
+    </span>
+  </div>
+
+  <!-- Helper Text / Error Message -->
+  <small *ngIf="helperText || errorMessage()" [ngClass]="{
+    'erp-input-error-text': errorMessage(),
+    'erp-input-helper-text': !errorMessage()
+  }">
+    {{ errorMessage() || helperText }}
+  </small>
+</div>

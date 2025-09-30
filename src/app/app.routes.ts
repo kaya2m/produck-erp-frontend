@@ -25,46 +25,72 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/components/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./features/dashboard/components/dashboard.component').then(m => m.DashboardComponent),
+        data: {
+          breadcrumb: { label: 'Dashboard', icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z' }
+        }
       },
       // CRM Routes
       {
         path: 'crm',
+        data: {
+          breadcrumb: { label: 'CRM' }
+        },
         children: [
           {
             path: 'leads',
-            loadComponent: () => import('./features/leads/components/leads.component').then(m => m.LeadsComponent)
+            loadComponent: () => import('./features/leads/components/leads.component').then(m => m.LeadsComponent),
+            data: {
+              breadcrumb: { label: 'Müşteri Adayları' }
+            }
           },
           {
             path: 'opportunities',
-            loadComponent: () => import('./features/opportunities/components/opportunities.component').then(m => m.OpportunitiesComponent)
+            loadComponent: () => import('./features/opportunities/components/opportunities.component').then(m => m.OpportunitiesComponent),
+            data: {
+              breadcrumb: { label: 'Fırsatlar' }
+            }
           },
           {
             path: 'accounts',
-            loadComponent: () => import('./features/accounts/components/accounts.component').then(m => m.AccountsComponent)
+            loadComponent: () => import('./features/accounts/components/accounts.component').then(m => m.AccountsComponent),
+            data: {
+              breadcrumb: { label: 'Hesaplar' }
+            }
           },
           {
             path: 'contacts',
-            loadComponent: () => import('./features/contacts/components/contacts.component').then(m => m.ContactsComponent)
+            loadComponent: () => import('./features/contacts/components/contacts.component').then(m => m.ContactsComponent),
+            data: {
+              breadcrumb: { label: 'Kişiler' }
+            }
           }
         ]
       },
       // Workflow Route
       {
         path: 'workflow',
-        loadComponent: () => import('./features/workflow/components/workflow.component').then(m => m.WorkflowComponent)
+        loadComponent: () => import('./features/workflow/components/workflow.component').then(m => m.WorkflowComponent),
+        data: {
+          breadcrumb: { label: 'İş Akışı' }
+        }
       },
-      // Settings Routes
+      // System Management Routes
+      {
+        path: 'system-management',
+        loadChildren: () => import('./features/system-management/system-management.routes').then(m => m.systemManagementRoutes),
+        data: {
+          breadcrumb: { label: 'Sistem Yönetimi', url: '/system-management' }
+        }
+      },
+      // General Settings Routes
       {
         path: 'settings',
         children: [
           {
-            path: 'users',
-            loadComponent: () => import('./features/security/components/users.component').then(m => m.UsersComponent)
-          },
-          {
-            path: 'security',
-            loadComponent: () => import('./features/security/components/security.component').then(m => m.SecurityComponent)
+            path: '',
+            redirectTo: '/system-management',
+            pathMatch: 'full'
           }
         ]
       }

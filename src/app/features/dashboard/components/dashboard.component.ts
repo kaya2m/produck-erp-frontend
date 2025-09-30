@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SmartGridComponent } from '@shared/components/smart-grid/smart-grid.component';
-import { ColDef } from 'ag-grid-community';
 import { NotificationService } from '@core/services/notification.service';
 
 @Component({
   selector: 'erp-dashboard',
   standalone: true,
-  imports: [CommonModule, SmartGridComponent],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -21,7 +19,7 @@ export class DashboardComponent implements OnInit {
     { id: 5, name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Finance', status: 'Active' }
   ];
 
-  columnDefs: ColDef[] = [
+  columnDefs = [
     {
       field: 'id',
       headerName: 'ID',

@@ -1,0 +1,43 @@
+<div class="erp-select-wrapper">
+  <!-- Label -->
+  <label *ngIf="label" [for]="selectId" class="erp-select-label">
+    {{ label }}
+    <span *ngIf="required" class="erp-select-required">*</span>
+  </label>
+
+  <!-- Select Dropdown -->
+  <p-select
+    [inputId]="selectId"
+    [options]="options"
+    [placeholder]="placeholder"
+    [disabled]="disabled()"
+    [filter]="showSearch"
+    [filterPlaceholder]="'Ara...'"
+    [optionLabel]="'label'"
+    [optionValue]="'value'"
+    [optionDisabled]="'disabled'"
+    [showClear]="false"
+    [ngModel]="value()"
+    (ngModelChange)="onValueChange($event)"
+    (onBlur)="onBlur()"
+    (onFocus)="onFocus()"
+    [styleClass]="getStyleClass()"
+    [style.width]="'100%'"
+    appendTo="body"
+  >
+    <ng-template let-option pTemplate="item">
+      <div class="flex align-items-center gap-2">
+        <i *ngIf="option.icon" [class]="option.icon"></i>
+        <span>{{ option.label }}</span>
+      </div>
+    </ng-template>
+  </p-select>
+
+  <!-- Helper Text / Error Message -->
+  <small *ngIf="helperText || errorMessage()" [ngClass]="{
+    'erp-select-error-text': errorMessage(),
+    'erp-select-helper-text': !errorMessage()
+  }">
+    {{ errorMessage() || helperText }}
+  </small>
+</div>

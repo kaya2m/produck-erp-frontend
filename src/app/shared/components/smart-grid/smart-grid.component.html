@@ -1,50 +1,23 @@
 <div class="smart-grid-container">
-  <!-- Grid Controls -->
-  <div class="grid-toolbar mb-4 flex justify-between items-center">
-    <div class="flex items-center space-x-2">
-      <ng-content select="[slot=toolbar-left]"></ng-content>
+  <!-- Data Grid using our new component -->
+  <erp-data-grid
+    [value]="rowData"
+    [columns]="columnDefs"
+    [config]="dataGridConfig"
+    (selectionChange)="onDataGridSelectionChanged($event)"
+    (ready)="onDataGridReady()">
+
+    <!-- Toolbar content projection -->
+    <div slot="actions">
+      <div class="flex items-center space-x-2">
+        <ng-content select="[slot=toolbar-left]"></ng-content>
+        <ng-content select="[slot=toolbar-right]"></ng-content>
+      </div>
     </div>
-
-    <div class="flex items-center space-x-2">
-      <ng-content select="[slot=toolbar-right]"></ng-content>
-
-      <!-- Export Buttons -->
-      <button
-        type="button"
-        class="btn-secondary text-sm"
-        (click)="exportToCsv()"
-        title="Export to CSV">
-        📊 CSV
-      </button>
-
-      <button
-        type="button"
-        class="btn-secondary text-sm"
-        (click)="exportToExcel()"
-        title="Export to Excel">
-        📈 Excel
-      </button>
-    </div>
-  </div>
-
-  <!-- AG Grid -->
-  <div
-    [class]="theme + ' w-full'"
-    [style.height]="height">
-    <ag-grid-angular
-      class="w-full h-full"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [gridOptions]="gridOptions"
-      (gridReady)="onGridReady($event)"
-      (rowClicked)="onRowClicked($event)"
-      (cellClicked)="onCellClicked($event)"
-      (selectionChanged)="onSelectionChanged($event)">
-    </ag-grid-angular>
-  </div>
+  </erp-data-grid>
 
   <!-- Grid Footer -->
-  <div class="grid-footer mt-2 text-sm text-gray-600">
+  <!-- <div class="grid-footer mt-2 text-sm text-gray-600">
     <ng-content select="[slot=footer]"></ng-content>
-  </div>
+  </div> -->
 </div>

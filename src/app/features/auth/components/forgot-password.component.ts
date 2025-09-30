@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import { NotificationService } from '@core/services/notification.service';
+import { ThemeService } from '@core/services/theme.service';
 
 @Component({
   selector: 'erp-forgot-password',
@@ -16,7 +17,8 @@ export class ForgotPasswordComponent {
   forgotPasswordForm: FormGroup;
   isLoading = signal(false);
   isEmailSent = signal(false);
-  isDarkMode = signal(false);
+  private readonly themeService = inject(ThemeService);
+  readonly isDarkMode = this.themeService.isDarkMode;
 
   constructor(
     private fb: FormBuilder,
@@ -33,8 +35,6 @@ export class ForgotPasswordComponent {
       this.router.navigate(['/dashboard']);
     }
 
-    // Set initial theme based on system preference
-    this.isDarkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
   }
 
   onSubmit(): void {
@@ -63,10 +63,6 @@ export class ForgotPasswordComponent {
       this.markFormGroupTouched();
       this.notificationService.warning('Lütfen geçerli bir email adresi girin.');
     }
-  }
-
-  toggleTheme(): void {
-    this.isDarkMode.set(!this.isDarkMode());
   }
 
   getFieldError(fieldName: string): string {

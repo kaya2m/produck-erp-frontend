@@ -1,0 +1,212 @@
+<div class="user-management-container">
+  <erp-data-grid
+    [value]="users()"
+    [columns]="userColumns"
+    [config]="gridConfig"
+    [customButtons]="customButtons"
+    [loading]="loading"
+    (selectionChange)="onSelectionChanged($event)">
+  </erp-data-grid>
+
+  <!-- Create/Edit User Modal -->
+  <erp-modal
+    #userModal
+    [title]="selectedUser() ? 'Kullanıcı Düzenle' : 'Yeni Kullanıcı'"
+    size="lg"
+    confirmText="Kaydet"
+    (confirmed)="saveUser()"
+    (canceled)="cancelEdit()"
+  >
+    <form [formGroup]="userForm" class="user-form">
+      <div class="form-grid">
+        <erp-input
+          label="Kullanıcı Adı"
+          formControlName="username"
+          placeholder="Kullanıcı adı girin"
+          [required]="true"
+        />
+
+        <erp-input
+          label="E-posta"
+          formControlName="email"
+          placeholder="E-posta adresi girin"
+          type="email"
+          [required]="true"
+        />
+
+        <erp-input
+          label="Telefon"
+          formControlName="phoneNumber"
+          placeholder="Telefon numarası girin"
+          type="tel"
+        />
+
+        <erp-select
+          label="Rol"
+          [options]="roleOptions()"
+          formControlName="roleId"
+          [required]="true"
+        />
+      </div>
+
+      @if (!selectedUser()) {
+        <div class="form-grid">
+          <erp-input
+            label="Şifre"
+            formControlName="password"
+            placeholder="Şifre girin"
+            type="password"
+            [required]="true"
+          />
+
+          <erp-input
+            label="Şifre Tekrar"
+            formControlName="confirmPassword"
+            placeholder="Şifreyi tekrar girin"
+            type="password"
+            [required]="true"
+          />
+        </div>
+      }
+
+      <div class="checkbox-group">
+        <erp-checkbox
+          label="Aktif"
+          formControlName="isActive"
+          description="Kullanıcının sisteme giriş yapabilmesi için aktif olması gerekir"
+        />
+
+        <erp-checkbox
+          label="E-posta Doğrulandı"
+          formControlName="emailConfirmed"
+          description="Kullanıcının e-posta adresi doğrulandı mı?"
+        />
+
+        <erp-checkbox
+          label="İki Faktörlü Kimlik Doğrulama"
+          formControlName="twoFactorEnabled"
+          description="Kullanıcı için 2FA etkin mi?"
+        />
+      </div>
+    </form>
+  </erp-modal>
+
+  <!-- User Detail Modal -->
+  <erp-modal
+    #detailModal
+    title="Kullanıcı Detayları"
+    size="xl"
+    [showConfirmButton]="false"
+  >
+    @if (userDetail()) {
+      <div class="user-detail">
+        <!-- Basic Info -->
+        <div class="detail-section">
+          <h3 class="section-title">Temel Bilgiler</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <dt class="detail-label">Kullanıcı Adı</dt>
+              <dd class="detail-value">{{ userDetail()?.username }}</dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">E-posta</dt>
+              <dd class="detail-value">{{ userDetail()?.email }}</dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">Telefon</dt>
+              <dd class="detail-value">{{ userDetail()?.phoneNumber || 'Belirtilmemiş' }}</dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">E-posta Doğrulandı</dt>
+              <dd class="detail-value">{{ userDetail()?.emailConfirmed ? 'Evet' : 'Hayır' }}</dd>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Info -->
+        <div class="detail-section">
+          <h3 class="section-title">Rol ve İzinler</h3>
+          @if (userDetail()?.roles && userDetail()!.roles!.length > 0) {
+            <div class="role-list">
+              @for (role of userDetail()!.roles!; track role.id) {
+                <div class="role-item">
+                  <span class="role-badge">{{ role.name }}</span>
+                  @if (role.description) {
+                    <span class="role-description">{{ role.description }}</span>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-state">Bu kullanıcıya henüz rol atanmamış.</p>
+          }
+        </div>
+
+        <!-- Activity Info -->
+        <div class="detail-section">
+          <h3 class="section-title">Aktivite Bilgileri</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <dt class="detail-label">Son Güncelleme</dt>
+              <dd class="detail-value">
+                {{ userDetail()?.lastModifiedDate ? (userDetail()?.lastModifiedDate | date:'dd.MM.yyyy HH:mm') : 'Hiç güncellenmemiş' }}
+              </dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">Kayıt Tarihi</dt>
+              <dd class="detail-value">{{ userDetail()?.createdDate | date:'dd.MM.yyyy HH:mm' }}</dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">Durum</dt>
+              <dd class="detail-value">
+                <span class="status-badge" [class]="userDetail()?.isActive ? 'status-active' : 'status-inactive'">
+                  {{ userDetail()?.isActive ? 'Aktif' : 'Pasif' }}
+                </span>
+              </dd>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </erp-modal>
+
+  <!-- Import Modal -->
+  <erp-modal
+    #importModal
+    title="Kullanıcı İçe Aktarma"
+    size="lg"
+    confirmText="İçe Aktar"
+    (confirmed)="processImport()"
+  >
+    <div class="import-section">
+      <div class="import-instructions">
+        <h4>İçe Aktarma Talimatları</h4>
+        <ul class="instruction-list">
+          <li>CSV veya Excel dosyası yükleyebilirsiniz</li>
+          <li>Gerekli sütunlar: firstName, lastName, username, email</li>
+          <li>İsteğe bağlı sütunlar: phoneNumber, roleId, isActive</li>
+          <li>İlk satır başlık satırı olmalıdır</li>
+        </ul>
+      </div>
+
+      <div class="file-upload">
+        <input
+          #fileInput
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          class="file-input"
+        />
+        <erp-button variant="outline" (click)="fileInput.click()">
+          <svg slot="icon-left" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
+          Dosya Seç
+        </erp-button>
+        @if (selectedFile()) {
+          <span class="file-name">{{ selectedFile()?.name }}</span>
+        }
+      </div>
+    </div>
+  </erp-modal>
+</div>

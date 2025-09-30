@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgxSonnerToaster } from 'ngx-sonner';
 import { LoadingService } from '@core/services/loading.service';
+import { BreadcrumbService } from '@core/services/breadcrumb.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,5 +14,10 @@ import { CommonModule } from '@angular/common';
 export class App {
   protected readonly title = signal('Produck ERP');
 
-  constructor(protected loadingService: LoadingService) {}
+  constructor(
+    protected loadingService: LoadingService,
+    private breadcrumbService: BreadcrumbService
+  ) {
+    // Initialize breadcrumb service by injecting it
+  }
 }

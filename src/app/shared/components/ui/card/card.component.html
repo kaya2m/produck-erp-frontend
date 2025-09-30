@@ -1,0 +1,15 @@
+<p-card
+  [header]="title"
+  [subheader]="subtitle"
+  [styleClass]="getStyleClass()"
+>
+  <ng-template pTemplate="header" *ngIf="hasHeader">
+    <ng-content select="[slot=header]"></ng-content>
+  </ng-template>
+
+  <ng-content></ng-content>
+
+  <ng-template pTemplate="footer" *ngIf="hasFooter">
+    <ng-content select="[slot=footer]"></ng-content>
+  </ng-template>
+</p-card>

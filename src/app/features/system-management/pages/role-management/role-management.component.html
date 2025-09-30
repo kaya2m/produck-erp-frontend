@@ -1,0 +1,198 @@
+<div class="role-management-container">
+  <erp-data-grid
+    [value]="roles()"
+    [columns]="roleColumns"
+    [config]="gridConfig"
+    [customButtons]="customButtons"
+    [loading]="loading"
+    (selectionChange)="onSelectionChanged($event)">
+  </erp-data-grid>
+
+  <!-- Create/Edit Role Modal -->
+  <erp-modal
+    #roleModal
+    [title]="selectedRole() ? 'Rol Düzenle' : 'Yeni Rol'"
+    size="lg"
+    confirmText="Kaydet"
+    (confirmed)="saveRole()"
+    (canceled)="cancelEdit()"
+  >
+    <form [formGroup]="roleForm" class="role-form">
+      <erp-input
+        label="Rol Adı"
+        formControlName="name"
+        placeholder="Rol adı girin"
+        [required]="true"
+      />
+
+      <erp-input
+        label="Açıklama"
+        formControlName="description"
+        placeholder="Rol açıklamasını girin"
+      />
+
+      <div class="permissions-section">
+        <label class="permissions-label">İzinler</label>
+        <div class="permissions-container">
+          @for (category of permissionCategories(); track category.category) {
+            <div class="permission-category">
+              <div class="category-header">
+                <div class="category-info">
+                  <h4 class="category-title">
+                    {{ category.category }} ({{ category.count }})
+                  </h4>
+                </div>
+                <div class="category-actions">
+                  <erp-button
+                    variant="ghost"
+                    size="sm"
+                    (click)="selectCategoryPermissions(category.category, true)">
+                    Tümünü Seç
+                  </erp-button>
+                  <erp-button
+                    variant="ghost"
+                    size="sm"
+                    (click)="selectCategoryPermissions(category.category, false)">
+                    Temizle
+                  </erp-button>
+                </div>
+              </div>
+              <div class="permissions-list">
+                @for (permission of category.permissions; track permission.id) {
+                  <div class="permission-item">
+                    <input
+                      type="checkbox"
+                      [id]="'perm-' + permission.id"
+                      [checked]="selectedPermissions().includes(permission.id)"
+                      (change)="togglePermission(permission.id, $event)"
+                      class="permission-checkbox"
+                    />
+                    <div class="permission-content">
+                      <label [for]="'perm-' + permission.id" class="permission-name">
+                        {{ permission.name }}
+                      </label>
+                      @if (permission.description) {
+                        <p class="permission-description">{{ permission.description }}</p>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </form>
+  </erp-modal>
+
+  <!-- Role Detail Modal -->
+  <erp-modal
+    #detailModal
+    title="Rol Detayları"
+    size="xl"
+    [showConfirmButton]="false"
+  >
+    @if (roleDetail()) {
+      <div class="role-detail">
+        <!-- Basic Info -->
+        <div class="detail-section">
+          <h3 class="section-title">Temel Bilgiler</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <dt class="detail-label">Rol Adı</dt>
+              <dd class="detail-value">{{ roleDetail()?.name }}</dd>
+            </div>
+            <div class="detail-item">
+              <dt class="detail-label">Açıklama</dt>
+              <dd class="detail-value">{{ roleDetail()?.description || 'Belirtilmemiş' }}</dd>
+            </div>
+          </div>
+        </div>
+
+        <!-- Permissions -->
+        <div class="detail-section">
+          <h3 class="section-title">İzinler</h3>
+          @if (roleDetail()?.permissions && roleDetail()!.permissions!.length > 0) {
+            <div class="permissions-detail">
+              @for (group of groupPermissionsByCategory(roleDetail()!.permissions!); track group.category) {
+                <div class="permission-group">
+                  <h4 class="group-title">
+                    {{ group.category }} ({{ group.permissions.length }})
+                  </h4>
+                  <div class="permission-badges">
+                    @for (permission of group.permissions; track permission.id) {
+                      <span class="permission-badge">
+                        {{ permission.name }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-state">Bu role henüz izin atanmamış.</p>
+          }
+        </div>
+
+        <!-- Users with this role -->
+        <div class="detail-section">
+          <h3 class="section-title">Bu Role Sahip Kullanıcılar</h3>
+          @if (roleUsers().length > 0) {
+            <div class="users-list">
+              @for (user of roleUsers(); track user.userId) {
+                <div class="user-item">
+                  <div class="user-info">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-email">({{ user.email }})</span>
+                  </div>
+                  <span class="user-status" [class]="user.isActive ? 'status-active' : 'status-inactive'">
+                    {{ user.isActive ? 'Aktif' : 'Pasif' }}
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-state">Bu role sahip kullanıcı bulunmuyor.</p>
+          }
+        </div>
+      </div>
+    }
+  </erp-modal>
+
+  <!-- Permission Management Modal -->
+  <erp-modal
+    #permissionModal
+    title="İzin Yönetimi"
+    size="xl"
+    [showConfirmButton]="false"
+  >
+    <div class="permission-management">
+      <div class="permission-header">
+        <div class="header-info">
+          <h3 class="management-title">Sistem İzinleri</h3>
+          <p class="management-subtitle">Sistemde tanımlı tüm izinler</p>
+        </div>
+        <erp-button variant="primary" (click)="initializeDefaultPermissions()">
+          Varsayılan İzinleri Yükle
+        </erp-button>
+      </div>
+
+      <div class="permissions-grid">
+        <div class="grid-container">
+          <erp-data-grid
+            [value]="allPermissions()"
+            [columns]="permissionColumns"
+            [config]="{
+              selectionMode: null,
+              paginator: true,
+              rows: 10,
+              size: 'small',
+              globalFilterFields: ['name', 'description', 'category']
+            }"
+            [loading]="loading">
+          </erp-data-grid>
+        </div>
+      </div>
+    </div>
+  </erp-modal>
+</div>
